@@ -1,4 +1,3 @@
-# Dockerfile
 # Use Python base image
 FROM python:3.12-slim
 
@@ -10,11 +9,14 @@ ENV PYTHONUNBUFFERED 1
 WORKDIR /app
 
 # Install dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements.txt .  
+RUN pip install --no-cache-dir -r requirements.txt  
 
 # Copy project files
 COPY . .
+
+# Run migrations and collect static files
+RUN python manage.py migrate && python manage.py collectstatic --noinput
 
 # Expose the port (used in Kubernetes)
 EXPOSE 8000
